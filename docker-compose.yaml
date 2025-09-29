@@ -1,0 +1,21 @@
+services:
+  mongo-zootique-backend:
+    image: mongo
+    restart: always
+    container_name: mongo-zootique-backend
+    ports:
+      - "27057:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - mongo_network
+
+volumes:
+  mongo_data:
+  
+networks:
+  mongo_network:
+    driver: bridge
