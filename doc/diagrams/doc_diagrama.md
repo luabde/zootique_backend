@@ -1,6 +1,6 @@
 # Esquema entidad relación BD
 
-![alt text](zootiqueBD_Diagrama.png)
+![alt text](zootiqueBD_Diagrama.jpg)
 
 ## Usuario
 **Descripción:** contiene toda la información que tiene que ver con los usuarios que usaran la pagia web
