@@ -18,6 +18,8 @@
 | bann | Especifica si el usuario esta baneado |
 | modificacion | especifica la fecha de la ultima modificacion de credenciales del usuario (puede ser contraseña, email, entre otros campos) |
 
+Implementación del modelo en código: [models/usuario.js](/zootique_backend/api/src/models/usuario.js)
+
 ## Dirección
 **Descripción:** tabla que contiene la dirección de envío de los productos que el cliente quiera comprar
 
@@ -95,6 +97,8 @@
 | descripcion | descripción del producto |
 | precio | precio del producto |
 | tipo | tipo de producto se puede referir a la categoria a la que pertenece ese producto |
+
+Implementación del modelo en código: [models/producto.js](/zootique_backend/api/src/models/producto.js)
 
 ## Favorito
 **Descripción:** tabla en la que se guardan por cada usuario los productos que le han gustado
