@@ -18,6 +18,9 @@
 | bann | Especifica si el usuario esta baneado |
 | modificacion | especifica la fecha de la ultima modificacion de credenciales del usuario (puede ser contraseña, email, entre otros campos) |
 
+### Índices
+- Índice en email: Gracias a este índice, se podrán hacer consultas a la bd a través del correo de una forma más rápida. Esto se interessante para la aplicacion debido a que la busqueda del email, es una operación frecuente en acciones relacionadas con el login o sign up
+
 Implementación del modelo en código: [models/usuario.js](/zootique_backend/api/src/models/usuario.js)
 
 ## Dirección
@@ -97,6 +100,9 @@ Implementación del modelo en código: [models/usuario.js](/zootique_backend/api
 | descripcion | descripción del producto |
 | precio | precio del producto |
 | tipo | tipo de producto se puede referir a la categoria a la que pertenece ese producto |
+
+### Índices
+- Se ha implementado un índice en el campo tipo, debido a que puede resultar útil cuando queremos filtrar los productos por categoria. Al final nos va a ayudar a mejorar la eficiencia durante las consultas.
 
 Implementación del modelo en código: [models/producto.js](/zootique_backend/api/src/models/producto.js)
 
