@@ -26,7 +26,11 @@ const productSchema = new Schema({
     stock: {
         type: Number,
         required: [true, 'Se necesita especificar el stock del producto']
-    }
+    },
+    descuentos: [{
+        type: Schema.Types.ObjectId,
+        ref: 'Discount'
+    }]
 });
 
 productSchema.index({ tipo: 1 });

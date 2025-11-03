@@ -6,7 +6,10 @@ const express = require('express')
 const connectDB = require('./config/db.js')
 
 const productRoutes = require('./routes/productRoutes.js');
-
+const userRoutes = require('./routes/userRoutes.js');
+const discountRouter = require('./routes/discountRoutes.js');
+const orderRouter = require('./routes/orderRoutes.js');
+const cartRouter = require('./routes/cartRoutes.js');
 
 // Inicializamos express
 const app = express();
@@ -22,6 +25,10 @@ app.get('/', (req, res) => res.send('API Ecommerce en marcha'));
 
 // Cuando se haga la llamada a la url /api/products se redirige a productRoutes
 app.use('/api/products', productRoutes);
+app.use('/api/users', userRoutes);
+app.use('/api/discounts', discountRouter);
+app.use('/api/orders', orderRouter);
+app.use('/api/cart', cartRouter);
 
 
 const PORT = process.env.PORT|3000;

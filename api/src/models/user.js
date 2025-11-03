@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
 const userSchema = new Schema({
@@ -31,8 +31,7 @@ const userSchema = new Schema({
         type: Number,
         unique: [true, 'El número de teléfono ya existe'],
         required: [true, 'Se requiere numero de telefono'],
-        min: 9,
-        max: 9
+        match: [/^\d{9}$/, 'El número de teléfono debe tener 9 dígitos']
     },
     contraseña: {
         type: String,
@@ -42,8 +41,8 @@ const userSchema = new Schema({
     },
     rol: {
         type: String,
-        enum: ['registrado', 'noReggistrado', 'admin'],
-        default: 'noRegistrado'
+        enum: ['registrado', 'admin'],
+        default: 'registrado'
     },
     bann: {
         type: Boolean,
@@ -53,11 +52,43 @@ const userSchema = new Schema({
     modificacion: {
         type: Date,
         required: false
-    }
-
+    },
+    // Direcciones (Relacion Embebida(que aunque sea N:N el numero de direcciones no sera infinito))
+     direcciones: [{
+        calle: String,
+        numero_piso: String,
+        codigo_postal: String,
+        ciudad: String,
+        provincia: String,
+        pais: { type: String, default: 'España' },
+        activa: { type: Boolean, default: false }
+    }],
+    // MÉTODOS DE PAGO EMBEBIDOS
+    metodos_pago: [{
+        tipo_metodo: {
+            type: String,
+            enum: ['PayPal', 'Visa', 'Mastercard', 'Bizum']
+        },
+        token: String,
+        activo: Boolean,
+        fecha_creacion: { 
+            type: Date, 
+            default: Date.now 
+        }
+    }],
+    // Puntos embebidos
+    puntos: {
+        puntos_acumulados: { type: Number, default: 0 },
+        actualizacion_puntos: Date
+    },
+    // Productos favoritos (al final son limitados al num de prods que hay en la tienda)
+    favoritos: [{
+        type: Schema.Types.ObjectId,
+        ref: 'product'
+    }]
 });
 
-userSchema.index({ email: 1 });
+// userSchema.index({ email: 1 });
 
 const user = mongoose.model('user', userSchema);
 

@@ -66,10 +66,44 @@ const readProductById = async (req, res) => {
 
 }
 
+// Funciones para descuento
+const addDiscountToProd = async (req, res) =>{
+    try{
+        const { id, discountId } = req.params;
+        const discount = await productService.addDiscountToProd(id, discountId);
+        res.status(200).json({status: 'success', data: discount});
+    }catch(err){
+        res.status(400).json({status: 'error', message: err.message});
+    }
+};
+
+const removeDiscountFromProd = async (req, res) =>{
+    try{
+        const { id, discountId } = req.params;
+        const discount = await productService.removeDiscountFromProd(id, discountId);
+        res.status(200).json({status: 'success', data: discount});
+    }catch(err){
+        res.status(400).json({status: 'error', message: err.message});
+    }
+};
+
+const getDiscounts = async (req, res) =>{
+    try{
+        const { id } = req.params;
+        const discounts = await productService.getDiscounts(id);
+        res.status(200).json({status: 'success', data: discounts});
+    }catch(err){
+        res.status(400).json({status: 'error', message: err.message});
+    }
+};
+
 module.exports = {
     createProduct,
     deleteProduct,
     updateProduct,
     readProduct,
-    readProductById
+    readProductById,
+    addDiscountToProd,
+    removeDiscountFromProd,
+    getDiscounts
 }
