@@ -6,6 +6,10 @@ const userController = require('../controllers/userController');
 
 // La ruta principal es /api/users
 
+// Rutas para la autenticación de usuarios
+router.post('/registrar', userController.register);
+router.post('/login', userController.login);
+
 // Rutas para los usuarios
 router.post('/', userController.createUser);
 router.delete('/:id', userController.deleteUser);

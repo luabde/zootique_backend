@@ -1,6 +1,32 @@
 const user = require('../models/user');
 const userService = require('../services/userService');
 
+// Controllers de autenticación
+const register = async(req, res)=>{
+    try{
+        const registro = await userService.registerUser(req.body);
+        res.status(200).json({status: 'successful', message: "Usuario registrado correctamente", data: registro});
+    }catch(err){
+        res.status(400).json({status: 'error', message: err.message});
+    }
+    
+};
+
+const login = async(req, res)=>{
+    try{
+        const { email, contraseña } = req.body;
+    
+        if(!email || !contraseña){
+            throw new Error('El email y la contraseña, son obligatorios');
+        }
+    
+        const resultado = await userService.loginUser(email, contraseña);
+
+        res.status(200).json({status: 'successful', message: 'Usuario correctamente logeado', data: resultado});
+    }catch(err){
+        res.status(400).json({status: 'error', message: err.message});
+    }
+};
 // Controllers de usuario
 const createUser = async(req, res)=>{
     try{
@@ -244,6 +270,8 @@ const getFavoritos = async (req, res) => {
 };
 
 module.exports = {
+    register,
+    login,
     createUser,
     deleteUser,
     updateUser,

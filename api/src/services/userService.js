@@ -1,5 +1,85 @@
 const User = require('../models/user');
 const Product = require('../models/product');
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
+
+// Funciones de autenticación
+const registerUser = async(userData) =>{
+    // Verificar si el user ya existe
+    const userExiste = await User.findOne({email: userData.email});
+    if(userExiste){
+        throw new Error ('El usuario ya existe');
+    }
+
+    // Crear el user (la contraseña se hashea automáticamente)
+    const nuevoUsuario = new User(userData);
+    await nuevoUsuario.save();
+
+    // Generamos el JWT, pondremos la info necesaria, la clave secreta generada en .env y la expiración del token en 24h
+    const token = jwt.sign(
+        { 
+            userId: nuevoUsuario._id,
+            email: nuevoUsuario.email,
+            rol: nuevoUsuario.rol 
+        },
+        process.env.JWT_SECRET,
+        { expiresIn: '24h' }
+    );
+    
+    // Retornar usuario sin contraseña y el token
+    return {
+        usuario: {
+            id: nuevoUsuario._id,
+            nombre: nuevoUsuario.nombre,
+            apellidos: nuevoUsuario.apellidos,
+            email: nuevoUsuario.email,
+            username: nuevoUsuario.username,
+            rol: nuevoUsuario.rol
+        },
+        token
+    };
+}
+
+const loginUser = async(email, contraseña) =>{
+    const usuario = await User.findOne({ email });
+
+    if(!usuario){
+        throw new Error ('Credenciales incorrectas');
+    }
+
+    if(usuario.bann){
+        throw new Error('El usuario esta baneado, porfavor contacte con un administrador');
+    }
+
+    const contraseñaValida = await bcrypt.compare(contraseña, usuario.contraseña);
+
+    if(!contraseñaValida){
+        throw new Error('Credenciales incorrectas');
+    }
+
+    // Generamos el token
+    const token = jwt.sign(
+        {
+            user_id: usuario._id,
+            email: usuario.email,
+            rol: usuario.rol
+        },
+        process.env.JWT_SECRET,
+        { expiresIn: '24h' }
+    );
+
+     return {
+        usuario: {
+            id: usuario._id,
+            nombre: usuario.nombre,
+            apellidos: usuario.apellidos,
+            email: usuario.email,
+            username: usuario.username,
+            rol: usuario.rol
+        },
+        token
+    };
+}
 
 // Funciones especificas para user
 const createUser = async (userData) =>{
@@ -148,6 +228,8 @@ const getFavoritos = async (userId) => {
 
 
 module.exports = {
+    registerUser,
+    loginUser,
     createUser,
     deleteUser,
     updateUser,
