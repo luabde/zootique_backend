@@ -3,6 +3,24 @@ const Product = require('../models/product');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 
+// Generar tokens
+
+const generateAccessToken = (playload) =>{
+    /*
+        Esta función nos permite generar los access tokens. Estos unicamente duraran 15 minutos y se usa para acceder a rutas protegidas. 
+        A la función se le pasa el playload que contiene info util del usuario.
+    */
+    return jwt.sign(playload, process.env.JWT_SECRET, { expiresIn: '15m' });
+}
+
+const generateRefreshToken = (playload) =>{
+    /*
+        Esta función nos permite generar los refreshTokens, estos tienen una duración más larga, porque no son los que te permiten a acceder rutas protegidas, sino que nos permite obtener un nuevo access token cuando este se expira.
+    */
+
+    return jwt.sign(playload, process.env.JWT_REFRESH_SECRET, { expiresIn: '7d' });
+}
+
 // Funciones de autenticación
 const registerUser = async(userData) =>{
     // Verificar si el user ya existe
@@ -15,16 +33,15 @@ const registerUser = async(userData) =>{
     const nuevoUsuario = new User(userData);
     await nuevoUsuario.save();
 
-    // Generamos el JWT, pondremos la info necesaria, la clave secreta generada en .env y la expiración del token en 24h
-    const token = jwt.sign(
-        { 
-            userId: nuevoUsuario._id,
-            email: nuevoUsuario.email,
-            rol: nuevoUsuario.rol 
-        },
-        process.env.JWT_SECRET,
-        { expiresIn: '24h' }
-    );
+    // Generamos el playload que se usara para crear el access y refreshtoken que es la info necesaria del usuario.
+    const playload = { 
+        userId: nuevoUsuario._id,
+        email: nuevoUsuario.email,
+        rol: nuevoUsuario.rol 
+    };
+
+    const accessToken = generateAccessToken(playload);
+    const refreshToken = generateRefreshToken(playload);
     
     // Retornar usuario sin contraseña y el token
     return {
@@ -36,7 +53,8 @@ const registerUser = async(userData) =>{
             username: nuevoUsuario.username,
             rol: nuevoUsuario.rol
         },
-        token
+        accessToken,
+        refreshToken
     };
 }
 
@@ -57,18 +75,18 @@ const loginUser = async(email, contraseña) =>{
         throw new Error('Credenciales incorrectas');
     }
 
-    // Generamos el token
-    const token = jwt.sign(
-        {
-            user_id: usuario._id,
-            email: usuario.email,
-            rol: usuario.rol
-        },
-        process.env.JWT_SECRET,
-        { expiresIn: '24h' }
-    );
+    // Generamos el playload que se usara para crear el access y refreshtoken que es la info necesaria del usuario.
+    const playload = { 
+        userId: usuario._id,
+        email: usuario.email,
+        rol: usuario.rol 
+    };
 
-     return {
+    const accessToken = generateAccessToken(playload);
+    const refreshToken = generateRefreshToken(playload);
+    
+    // Retornar usuario sin contraseña y el token
+    return {
         usuario: {
             id: usuario._id,
             nombre: usuario.nombre,
@@ -77,7 +95,8 @@ const loginUser = async(email, contraseña) =>{
             username: usuario.username,
             rol: usuario.rol
         },
-        token
+        accessToken,
+        refreshToken
     };
 }
 

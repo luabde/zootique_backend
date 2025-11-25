@@ -4,6 +4,7 @@ require('dotenv').config();
 // Carga express i el de la base de dades (importa funcion que se encarga de hcer la conexion a la bd)
 const express = require('express')
 const connectDB = require('./config/db.js')
+const cookieParser = require('cookie-parser');
 
 const productRoutes = require('./routes/productRoutes.js');
 const userRoutes = require('./routes/userRoutes.js');
@@ -16,6 +17,9 @@ const app = express();
 
 
 app.use(express.json());
+
+// Se usa cookie parser, para poder acceder a las cookies desde nuestra API
+app.use(cookieParser());
 
 // Se connecta a la bd
 connectDB();
