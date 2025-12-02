@@ -15,6 +15,15 @@ const cartRouter = require('./routes/cartRoutes.js');
 // Inicializamos express
 const app = express();
 
+// Instalar cors primero: npm install cors
+const cors = require('cors');
+
+// Después de inicializar express y antes de las rutas
+app.use(cors({
+  origin: 'http://localhost:5173', // Puerto donde corre Vite
+  credentials: true
+}));
+
 
 app.use(express.json());
 
