@@ -27,6 +27,10 @@ const productSchema = new Schema({
         type: Number,
         required: [true, 'Se necesita especificar el stock del producto']
     },
+    url: {
+        type: String,
+        required: false,
+    },
     descuentos: [{
         type: Schema.Types.ObjectId,
         ref: 'Discount'
