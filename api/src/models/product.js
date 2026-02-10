@@ -23,6 +23,12 @@ const productSchema = new Schema({
         enum: ['Alimento', 'Accesorio', 'Higiene y cuidado', 'Salud', 'Juguete', 'Hábitat', 'Servicios'],
         required: [true, 'Se require especificar el tipo de producto (categoria)']
     },
+    animales: {
+        type: [String],
+        enum: ['Perro', 'Gato', 'Reptil', 'Roedor', 'Ave', 'Pez'],
+        default: [],
+        required: false
+    },
     stock: {
         type: Number,
         required: [true, 'Se necesita especificar el stock del producto']
