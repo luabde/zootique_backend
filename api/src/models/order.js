@@ -52,12 +52,12 @@ const orderSchema = new Schema({
     metodo_pago_id: {
         type: Schema.Types.ObjectId,
         ref: 'User.metodos_pago',
-        required: true
+        required: false
     },
     estado: {
         type: String,
-        enum: ['preparación', 'recogida', 'reparto', 'entregado'],
-        default: 'preparación'
+        enum: ['preparacion', 'recogida', 'reparto', 'entregado'],
+        default: 'preparacion'
     },
     subtotal: {
         type: Number,

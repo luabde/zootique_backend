@@ -11,9 +11,11 @@ const addOrder = async (userId, productData, directionId, metodoPagoId, estado, 
     const direction = user.direcciones.id(directionId);
     if(!direction) throw new Error('No se ha encontrado la dirección');
 
-    // Buscamos el método
-    const metodo = user.metodos_pago.id(metodoPagoId);
-    if (!metodo) throw new Error('No se ha encontrado metodo de pago');
+    // Buscamos el método (Solo si se proporciona)
+    if (metodoPagoId) {
+        const metodo = user.metodos_pago.id(metodoPagoId);
+        if (!metodo) throw new Error('No se ha encontrado metodo de pago');
+    }
 
     // Buscamos los items y los guardamos en items para el snapshot
     const items = [];

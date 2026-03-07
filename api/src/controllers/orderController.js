@@ -13,9 +13,6 @@ const addOrder = async (req, res) =>{
         if (!directionId) {
             return res.status(400).json({ status: 'error', message: 'Se requiere una dirección de envío' });
         }
-        if (!metodoPagoId) {
-            return res.status(400).json({ status: 'error', message: 'Se requiere un método de pago' });
-        }
 
         const order = await orderService.addOrder(userId, productData, directionId, metodoPagoId, estado, fechaFin);
         return res.status(200).json({status: 'success', data: order});
