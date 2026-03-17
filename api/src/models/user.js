@@ -42,8 +42,8 @@ const userSchema = new Schema({
     },
     rol: {
         type: String,
-        enum: ['registrado', 'admin'],
-        default: 'registrado'
+        enum: ['cliente', 'admin'],
+        default: 'cliente'
     },
     bann: {
         type: Boolean,
@@ -81,6 +81,11 @@ const userSchema = new Schema({
     puntos: {
         puntos_acumulados: { type: Number, default: 0 },
         actualizacion_puntos: Date
+    },
+    // Refresh Token para manejar sesiones largas
+    refreshToken: {
+        type: String,
+        default: null
     },
     // Productos favoritos (al final son limitados al num de prods que hay en la tienda)
     favoritos: [{

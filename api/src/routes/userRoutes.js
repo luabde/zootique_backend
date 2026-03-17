@@ -3,38 +3,36 @@ const express = require('express');
 const router = express.Router();
 
 const userController = require('../controllers/userController');
+const { verifyToken } = require('../middleware/authMiddleware');
+const { verifyAdmin, isOwnerOrAdmin } = require('../middleware/roleMiddleware');
 
 // La ruta principal es /api/users
 
-// Rutas para la autenticación de usuarios
-router.post('/registrar', userController.register);
-router.post('/login', userController.login);
-
 // Rutas para los usuarios
-router.post('/', userController.createUser);
-router.delete('/:id', userController.deleteUser);
-router.put('/:id', userController.updateUser);
-router.get('/', userController.getAllUsers);
-router.get('/:id', userController.getUserById);
+router.post('/', verifyToken, verifyAdmin, userController.createUser);
+router.delete('/:id', verifyToken, isOwnerOrAdmin, userController.deleteUser);
+router.put('/:id', verifyToken, isOwnerOrAdmin, userController.updateUser);
+router.get('/', verifyToken, verifyAdmin, userController.getAllUsers);
+router.get('/:id', verifyToken, isOwnerOrAdmin, userController.getUserById);
 
 // Rutas para direcciones
-router.post('/:id/direcciones', userController.addDirection);
-router.put('/:id/direcciones/:direccionId', userController.updateDirection);
-router.delete('/:id/direcciones/:direccionId', userController.deleteDirection);
+router.post('/:id/direcciones', verifyToken, isOwnerOrAdmin, userController.addDirection);
+router.put('/:id/direcciones/:direccionId', verifyToken, isOwnerOrAdmin, userController.updateDirection);
+router.delete('/:id/direcciones/:direccionId', verifyToken, isOwnerOrAdmin, userController.deleteDirection);
 
 // Rutas para metodos pago
-router.get('/:id/metodos-pago', userController.getMetodosPago);
-router.post('/:id/metodos-pago', userController.addMetodoPago);
-router.put('/:id/metodos-pago/:metodoId', userController.updateMetodoPago);
+router.get('/:id/metodos-pago', verifyToken, isOwnerOrAdmin, userController.getMetodosPago);
+router.post('/:id/metodos-pago', verifyToken, isOwnerOrAdmin, userController.addMetodoPago);
+router.put('/:id/metodos-pago/:metodoId', verifyToken, isOwnerOrAdmin, userController.updateMetodoPago);
 
 // Rutas para los puntos
-router.post('/:id/puntos/add', userController.addPuntos);
-router.post('/:id/puntos/remove', userController.removePuntos);
-router.get('/:id/puntos', userController.getPuntos);
+router.post('/:id/puntos/add', verifyToken, verifyAdmin, userController.addPuntos);
+router.post('/:id/puntos/remove', verifyToken, verifyAdmin, userController.removePuntos);
+router.get('/:id/puntos', verifyToken, isOwnerOrAdmin, userController.getPuntos);
 
 // Rutas para favoritos
-router.post('/:id/favoritos/:productoId', userController.addFavorito);
-router.delete('/:id/favoritos/:productoId', userController.removeFavorito);
-router.get('/:id/favoritos', userController.getFavoritos);
+router.post('/:id/favoritos/:productoId', verifyToken, isOwnerOrAdmin, userController.addFavorito);
+router.delete('/:id/favoritos/:productoId', verifyToken, isOwnerOrAdmin, userController.removeFavorito);
+router.get('/:id/favoritos', verifyToken, isOwnerOrAdmin, userController.getFavoritos);
 
 module.exports = router;

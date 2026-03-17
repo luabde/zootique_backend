@@ -8,6 +8,7 @@ const cookieParser = require('cookie-parser');
 
 const productRoutes = require('./routes/productRoutes.js');
 const userRoutes = require('./routes/userRoutes.js');
+const authRoutes = require('./routes/authRoutes.js');
 const discountRouter = require('./routes/discountRoutes.js');
 const orderRouter = require('./routes/orderRoutes.js');
 const cartRouter = require('./routes/cartRoutes.js');
@@ -39,6 +40,7 @@ app.get('/', (req, res) => res.send('API Ecommerce en marcha'));
 // Cuando se haga la llamada a la url /api/products se redirige a productRoutes
 app.use('/api/products', productRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/auth', authRoutes);
 app.use('/api/discounts', discountRouter);
 app.use('/api/orders', orderRouter);
 app.use('/api/cart', cartRouter);

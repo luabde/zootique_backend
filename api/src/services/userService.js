@@ -1,104 +1,5 @@
 const User = require('../models/user');
 const Product = require('../models/product');
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt');
-
-// Generar tokens
-
-const generateAccessToken = (playload) =>{
-    /*
-        Esta función nos permite generar los access tokens. Estos unicamente duraran 15 minutos y se usa para acceder a rutas protegidas. 
-        A la función se le pasa el playload que contiene info util del usuario.
-    */
-    return jwt.sign(playload, process.env.JWT_SECRET, { expiresIn: '15m' });
-}
-
-const generateRefreshToken = (playload) =>{
-    /*
-        Esta función nos permite generar los refreshTokens, estos tienen una duración más larga, porque no son los que te permiten a acceder rutas protegidas, sino que nos permite obtener un nuevo access token cuando este se expira.
-    */
-
-    return jwt.sign(playload, process.env.JWT_REFRESH_SECRET, { expiresIn: '7d' });
-}
-
-// Funciones de autenticación
-const registerUser = async(userData) =>{
-    // Verificar si el user ya existe
-    const userExiste = await User.findOne({email: userData.email});
-    if(userExiste){
-        throw new Error ('El usuario ya existe');
-    }
-
-    // Crear el user (la contraseña se hashea automáticamente)
-    const nuevoUsuario = new User(userData);
-    await nuevoUsuario.save();
-
-    // Generamos el playload que se usara para crear el access y refreshtoken que es la info necesaria del usuario.
-    const playload = { 
-        userId: nuevoUsuario._id,
-        email: nuevoUsuario.email,
-        rol: nuevoUsuario.rol 
-    };
-
-    const accessToken = generateAccessToken(playload);
-    const refreshToken = generateRefreshToken(playload);
-    
-    // Retornar usuario sin contraseña y el token
-    return {
-        usuario: {
-            id: nuevoUsuario._id,
-            nombre: nuevoUsuario.nombre,
-            apellidos: nuevoUsuario.apellidos,
-            email: nuevoUsuario.email,
-            username: nuevoUsuario.username,
-            rol: nuevoUsuario.rol
-        },
-        accessToken,
-        refreshToken
-    };
-}
-
-const loginUser = async(email, contraseña) =>{
-    const usuario = await User.findOne({ email });
-
-    if(!usuario){
-        throw new Error ('Credenciales incorrectas');
-    }
-
-    if(usuario.bann){
-        throw new Error('El usuario esta baneado, porfavor contacte con un administrador');
-    }
-
-    const contraseñaValida = await bcrypt.compare(contraseña, usuario.contraseña);
-
-    if(!contraseñaValida){
-        throw new Error('Credenciales incorrectas');
-    }
-
-    // Generamos el playload que se usara para crear el access y refreshtoken que es la info necesaria del usuario.
-    const playload = { 
-        userId: usuario._id,
-        email: usuario.email,
-        rol: usuario.rol 
-    };
-
-    const accessToken = generateAccessToken(playload);
-    const refreshToken = generateRefreshToken(playload);
-    
-    // Retornar usuario sin contraseña y el token
-    return {
-        usuario: {
-            id: usuario._id,
-            nombre: usuario.nombre,
-            apellidos: usuario.apellidos,
-            email: usuario.email,
-            username: usuario.username,
-            rol: usuario.rol
-        },
-        accessToken,
-        refreshToken
-    };
-}
 
 // Funciones especificas para user
 const createUser = async (userData) =>{
@@ -247,8 +148,6 @@ const getFavoritos = async (userId) => {
 
 
 module.exports = {
-    registerUser,
-    loginUser,
     createUser,
     deleteUser,
     updateUser,
