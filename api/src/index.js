@@ -1,5 +1,7 @@
 // Carrega variables de entorno
 require('dotenv').config();
+const swaggerUi = require('swagger-ui-express');
+const swaggerSpec = require('./docs/swagger');
 
 // Carga express i el de la base de dades (importa funcion que se encarga de hcer la conexion a la bd)
 const express = require('express')
@@ -36,6 +38,8 @@ connectDB();
 
 // Crea la ruta raiz donde se inicializa la aplicación
 app.get('/', (req, res) => res.send('API Ecommerce en marcha'));
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // Cuando se haga la llamada a la url /api/products se redirige a productRoutes
 app.use('/api/products', productRoutes);
