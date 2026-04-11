@@ -1,4 +1,5 @@
 const authService = require('../services/authService');
+const User = require('../models/user');
 
 // Constante para las cookies
 /* Parametros que se usan
@@ -95,9 +96,23 @@ const logout = async (req, res) => {
         .json({ status: 'success', message: 'Sesión cerrada correctamente' });
 };
 
+/** Usuario actual según el accessToken (cookie o Authorization). */
+const me = async (req, res) => {
+    try {
+        const user = await User.findById(req.user.userId).select('-contraseña -refreshToken');
+        if (!user) {
+            return res.status(404).json({ status: 'error', message: 'Usuario no encontrado' });
+        }
+        return res.status(200).json({ status: 'success', data: user });
+    } catch (err) {
+        return res.status(400).json({ status: 'error', message: err.message });
+    }
+};
+
 module.exports = {
     register,
     login,
     refreshToken,
-    logout
+    logout,
+    me
 };
