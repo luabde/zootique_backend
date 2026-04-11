@@ -10,11 +10,12 @@ const verifyAdmin = (req, res, next) =>{
 }
 
 // Verificar que sa el dueño o admin, es decir por ejemplo si quieres cambiar la contraseña pues que no puedas cambiarla de otro usuario
+// /api/users/:id usa `id`; /api/cart/:userId y /api/orders/:userId usan `userId`.
 const isOwnerOrAdmin = (req, res, next) => {
-    const { id } = req.params;
+    const id = req.params.id ?? req.params.userId;
 
     const esAdmin = req.user.rol === 'admin';
-    const esDueño = req.user.userId === id;
+    const esDueño = String(req.user.userId) === String(id);
 
     if (!esAdmin && !esDueño) {
         return res.status(403).json({
