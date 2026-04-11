@@ -96,14 +96,20 @@ const logout = async (req, res) => {
         .json({ status: 'success', message: 'Sesión cerrada correctamente' });
 };
 
-/** Usuario actual según el accessToken (cookie o Authorization). */
+/** Usuario actual según el accessToken (cookie o Authorization). Solo id + nombre para el cliente. */
 const me = async (req, res) => {
     try {
-        const user = await User.findById(req.user.userId).select('-contraseña -refreshToken');
+        const user = await User.findById(req.user.userId).select('nombre');
         if (!user) {
             return res.status(404).json({ status: 'error', message: 'Usuario no encontrado' });
         }
-        return res.status(200).json({ status: 'success', data: user });
+        return res.status(200).json({
+            status: 'success',
+            data: {
+                id: user._id.toString(),
+                nombre: user.nombre
+            }
+        });
     } catch (err) {
         return res.status(400).json({ status: 'error', message: err.message });
     }
