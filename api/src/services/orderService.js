@@ -33,6 +33,10 @@ const addOrder = async (userId, productData, directionId, metodoPagoId, estado, 
             descuentos_aplicados: item.descuentos_aplicados || [],
             precio_total: 0 
         });
+
+        // Descontamos stock en BD en el momento de confirmar el item del pedido
+        product.stock -= item.cantidad;
+        await product.save();
     }
 
     // Se crea el nuevo pedido con los datos correctos
