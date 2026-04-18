@@ -56,7 +56,7 @@ const orderSchema = new Schema({
     },
     estado: {
         type: String,
-        enum: ['pendiente', 'preparacion', 'recogida', 'reparto', 'entregado'],
+        enum: ['pendiente', 'paid', 'preparacion', 'recogida', 'reparto', 'entregado'],
         default: 'pendiente'
     },
     subtotal: {

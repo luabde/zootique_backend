@@ -14,6 +14,8 @@ const authRoutes = require('./routes/authRoutes.js');
 const discountRouter = require('./routes/discountRoutes.js');
 const orderRouter = require('./routes/orderRoutes.js');
 const cartRouter = require('./routes/cartRoutes.js');
+const checkoutRouter = require('./routes/checkoutRoutes.js');
+const checkoutController = require('./controllers/checkoutController.js');
 
 // Inicializamos express
 const app = express();
@@ -27,6 +29,8 @@ app.use(cors({
   credentials: true
 }));
 
+// Stripe webhook necesita body raw para validar la firma
+app.post('/api/checkout/webhook', express.raw({ type: 'application/json' }), checkoutController.webhook);
 
 app.use(express.json());
 
@@ -47,6 +51,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/discounts', discountRouter);
 app.use('/api/orders', orderRouter);
+app.use('/api/checkout', checkoutRouter);
 app.use('/api/cart', cartRouter);
 
 
