@@ -96,10 +96,15 @@ const logout = async (req, res) => {
         .json({ status: 'success', message: 'Sesión cerrada correctamente' });
 };
 
-/** Usuario actual según el accessToken (cookie o Authorization). Solo id + nombre para el cliente. */
+/**
+ * Usuario actual según el accessToken (cookie o Authorization).
+ * Se devuelve también el `rol` para que el frontend pueda:
+ * - redirigir cuenta -> dashboard correcto (cliente/admin)
+ * - aplicar protección visual por rol en rutas/pantallas.
+ */
 const me = async (req, res) => {
     try {
-        const user = await User.findById(req.user.userId).select('nombre');
+        const user = await User.findById(req.user.userId).select('nombre rol');
         if (!user) {
             return res.status(404).json({ status: 'error', message: 'Usuario no encontrado' });
         }
@@ -107,7 +112,8 @@ const me = async (req, res) => {
             status: 'success',
             data: {
                 id: user._id.toString(),
-                nombre: user.nombre
+                nombre: user.nombre,
+                rol: user.rol
             }
         });
     } catch (err) {
