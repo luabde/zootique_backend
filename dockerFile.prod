@@ -1,0 +1,18 @@
+FROM node:22
+
+# Directorio de trabajo dentro del contenedor
+WORKDIR /api
+
+# Copia manifiestos para aprovechar la cache de Docker
+COPY package*.json ./
+# Instala solo dependencias de producción (imagen mas ligera)
+RUN npm ci --only=production
+
+# Copia el resto del codigo de la API
+COPY . .
+
+# Puerto donde escucha Express
+EXPOSE 3000
+
+# Comando de arranque en entorno de producción
+CMD ["node", "src/index.js"]

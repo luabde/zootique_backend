@@ -25,7 +25,7 @@ const cors = require('cors');
 
 // Después de inicializar express y antes de las rutas
 app.use(cors({
-  origin: 'http://localhost:5173', // Puerto donde corre Vite
+  origin: process.env.CORS_ORIGIN || 'http://localhost:5173',
   credentials: true
 }));
 
